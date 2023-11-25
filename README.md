@@ -1,2 +1,3 @@
-# tik-digitaltechnik-skript
-Skript Digitaltechnik
+# Grundlagenfach Informatik
+## Technische Informatik
+### Einführung in die Digitaltechnik
