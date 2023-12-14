@@ -1,30 +1,44 @@
 \documentclass{skript}
 
+% Prüfe PNG Dateien bzgl. Transparenz => sonst schwarzer Hintergrund bei den Bildern
 \pdfminorversion=3
-
-% locally modified /usr/local/texlive/2022/texmf-dist/tex/latex/tocloft to make chapter* => chapter
 
 \addbibresource{bibliography.bib} % BibTeX bibliography file
 
-\input{configuration/configuration_main.tex}
+\graphicspath{{../../../../latex-lib/skript-lib/graphics/}}
+\import{../../../../latex-lib/skript-lib/configuration}{configuration_main.tex}
 
-\begin{document}
+\newcommand\titleOne{Einführung in die Digitaltechnik}
+\newcommand\titleTwo{Technische Informatik}
+\newcommand\titleThree{Grundlagenfach Informatik}
 
-\setboolean{withsolutions}{true}
+\newcommand\autor{Oliver Probst}
+
+\newcommand\websiteOne{https://tik.ginf.ch}
+\newcommand\websiteTwo{https://tik.ginf.ch/digitaltechnik}
+\newcommand\websiteThree{}
+\newcommand\websiteFour{}
+\newcommand\websiteFive{}
+
+\newcommand\version{1.0}
+
+\setboolean{withsolutions}{false}
 \xsimsetup{
-solution/print = true
+	solution/print = false
 }
 
-\import{book_cover}{u1_front_cover.tex}
+\begin{document}
+	% Continous numbering of listings
+	\counterwithout{lstlisting}{chapter}
 
-\import{book_cover}{u2_vordere_klappe.tex}
+    \import{../../../../latex-lib/skript-lib/cover}{first_page.tex}
 
-\import{toc}{toc_main.tex}
+    \import{../../../../latex-lib/skript-lib/inhaltsverzeichnis}{inhaltsverzeichnis_main.tex}
 
-\import{teile}{teile_main.tex}
+    \import{teile}{teile_main.tex}
 
-\import{book_cover}{u3_hintere_klappe.tex}
+    \import{anhang}{anhang_main.tex}
 
-\import{book_cover}{u4_back_cover.tex}
-	
+    \import{../../../../latex-lib/skript-lib/cover}{last_page.tex}
+
 \end{document}

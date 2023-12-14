@@ -1,0 +1,686 @@
+% !TEX root = ../../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{karnaugh}
+\chapterimagetitle{\uppercase{Valentine - Karnaugh}}
+\chapterimageurl{https://xkcd.com/62/}
+\chapterimagehover{'Love and circuit analysis, hand in hand at last.'}
+
+\chapter{\acs{KV}-Diagramme}
+\label{ch:kv-diagramme}
+
+Boolesche Formeln in \ac{DNF} können sehr umfangreich sein. Wir zeigen nun, wie wir mit einem grafischen Verfahren eine vereinfachte Formel in \ac{DNF} erstellen können. Das Lernziel lautet:\\
+
+\lernziel{\autoref{ch:kv-diagramme}, \nameref{ch:kv-diagramme}}{
+\begin{minipage}{\linewidth}
+$\square$ \hspace{0.1cm} Sie erstellen eine vereinfachte boolesche Formel in \ac{DNF} mithilfe eines \acs{KV}-Diagramms.
+\end{minipage}
+}
+
+\section{Was heisst vereinfachen?}
+
+Wir wollen weiterhin boolesche Formeln in \acs{DNF} aus einer Wahrheitstabelle erstellen. Die \textbf{Anzahl} der \textbf{Konjunktionen} und \textbf{Disjunktionen} in der Formel sollte jedoch so gering wie möglich sein.
+\begin{example}
+Die boolesche Formel $A_0 = (E_0 \wedge E_1 \wedge E_2) \vee (E_0 \wedge \neg E_1 \wedge E_2) \vee (E_0 \wedge E_1 \wedge \neg E_2)$ können wir beispielsweise durch Anwendung der booleschen Gesetze vereinfachen. Wir erhalten:
+\begin{center}
+$A_0 = (E_0 \wedge E_1 \wedge E_2) \vee (E_0 \wedge \neg E_1 \wedge E_2) \vee (E_0 \wedge E_1 \wedge \neg E_2) = (E_0 \wedge E_2) \vee (E_0 \wedge E_1)$
+\end{center}
+\end{example}
+
+\section{Konstruktion einer disjunktiven Normalform mit einem \acs{KV}-Diagramm}
+
+Wir können für \textbf{jede} Wahrheitstabelle eine vereinfachte boolesche Formel erstellen.
+
+\begin{important}
+Für \textbf{jeden Ausgang} $A$:
+\begin{enumerate}
+\item[1.)] Bestimme die \textbf{Anzahl der Eingänge} ($=e$) in der Wahrheitstabelle.
+\item[2.)] Bestimme die \textbf{Anzahl der Zeilen} ($=z$) in der Wahrheitstabelle.
+\item[3.)] Verwende das \textbf{\acs{KV}-Diagramm} für $\mathbf{e}$ \textbf{Eingänge} mit $\mathbf{z}$ \textbf{Zellen}.
+\item[4.)] Suche \textbf{alle Zeilen} in der \textbf{Wahrheitstabelle}, deren \textbf{Ausgang} $\mathbf{1}$ ist.
+\item[5.)] Trage jede $\mathbf{1}$ im \acs{KV}-Diagramm in die \textbf{entsprechende Zelle} ein.
+\item[6.)] Bilde im \acs{KV}-Diagramm möglichst \textbf{grosse Blöcke}. Die \textbf{Blockgrösse} muss eine $\mathbf{2}$\textbf{er-Potenz} sein (d.h. $1$, $2$, $4$, $8$, $\dots$).
+\item[7.)] Erstelle \textbf{pro Block} eine Teilformel mithilfe von \textbf{Negationen} und \textbf{Konjunktionen}.
+\item[8.)] Für den Ausgang $A$: Verknüpfe die \textbf{Teilformeln} aus 7.) mit \textbf{Disjunktionen}.
+\end{enumerate}
+\end{important}
+
+\vfill
+
+\newpage
+
+Wir zeigen nun an einem Beispiel, wie wir mithilfe eines \ac{KV}-Diagramms für eine gegebene Wahrheitstabelle eine vereinfachte boolesche Formel in \ac{DNF} erzeugen können.
+
+\begin{example}
+Die Wahrheitstabelle in \autoref{table-kv-bsp-1} hat drei Eingänge und $2^3 = 8$ Zeilen. Wir verwenden daher das entsprechende \ac{KV}-Diagramm für drei Eingänge, das aus acht Zellen besteht.
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.4\textwidth}
+\centering
+\begin{tblr}{|c|c|c||c|}
+\hline
+$E_2$ & $E_1$ & $E_0$ & $A_0 = \text{???}$ \\ \hline[2pt]
+0 & 0 & 0 & 1\\ \hline
+0 & 0 & 1 & 1\\ \hline
+0 & 1 & 0 & 0\\ \hline
+0 & 1 & 1 & 1\\ \hline
+1 & 0 & 0 & 0\\ \hline
+1 & 0 & 1 & 0\\ \hline
+1 & 1 & 0 & 0\\ \hline
+1 & 1 & 1 & 1\\ \hline
+\end{tblr}
+\caption{Wahrheitstabelle für $A_0$.}
+\label{table-kv-bsp-1}
+\end{minipage}
+\hfill
+\begin{minipage}{0.55\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+  \karnaughmap{3}{$A_0$}{{$E_2$}{$E_1$}{$E_0$}}{}{
+     \node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+     \node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+     \node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+     \node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     \node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\caption{\acs{KV}-Diagramm für drei Eingänge.}
+\label{figure-kv-diagramm-bsp-1}
+\end{minipage}
+\end{figure}
+
+In der Wahrheitstabelle suchen wir nun die Zeilen, die am Ausgang eine $1$ haben. Diese Einsen werden dann in die entsprechende Zelle des \ac{KV}-Diagramms übertragen.
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tblr}{
+colspec = {|c|c|c||c|c},
+cell{2}{4} = {yellow!25},
+cell{3}{4} = {red!25},
+cell{5}{4} = {blue!25},
+cell{9}{4} = {green!25}
+}
+\cline{1-4}
+$E_2$ & $E_1$ & $E_0$ & $A_0 = \text{???}$ \\ \cline[2pt]{1-4}
+0 & 0 & 0 & 1 &	\circled{1} \\ \cline{1-4}
+0 & 0 & 1 & 1 &	\circled{2} \\ \cline{1-4}
+0 & 1 & 0 & 0 &	\\ \cline{1-4}
+0 & 1 & 1 & 1 &	\circled{3} \\ \cline{1-4}
+1 & 0 & 0 & 0 &	\\ \cline{1-4}
+1 & 0 & 1 & 0 &	\\ \cline{1-4}
+1 & 1 & 0 & 0 &	\\ \cline{1-4}
+1 & 1 & 1 & 1 &	\circled{4} \\ \cline{1-4}
+\end{tblr}
+\caption{Die Eingänge bestimmen die Position im \acs{KV}-Diagramm.}
+\label{table-kv-bsp-2}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh, grp/.style n args={3}{#1, fill=#1!50,
+                      minimum width=#2\kmunitlength,
+                      minimum height=#3\kmunitlength,
+                      rounded corners=0.2\kmunitlength,
+                      fill opacity=0.6,
+                      rectangle, draw}]
+  \karnaughmap{3}{$A_0$}{{$E_2$}{$E_1$}{$E_0$}}{11~1 ~~~1}{
+     \node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+     \node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+     \node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+     \node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     \node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+   \node[grp={yellow}{0.9}{0.9}](c000) at (0.5, 1.5) {};
+   \node[grp={red}{0.9}{0.9}](c001) at (1.5, 1.5) {};
+   \node[grp={blue}{0.9}{0.9}](c011) at (1.5, 0.5) {};
+   \node[grp={green}{0.9}{0.9}](c011) at (2.5, 0.5) {};
+  }
+\end{tikzpicture}
+\caption{Jede farbige Zelle entspricht einer Zeile in der Wahrheitstabelle. Wir können die Position der Einsen dadurch herausfinden, indem wir die Teilformel der entsprechenden Zeile betrachten, so wie wir es von der \protect\say{normalen} Konstruktion einer booleschen Formel in \protect\acs{DNF} kennen.}
+\label{figure-kv-diagramm-bsp-2}
+\end{minipage}
+\end{figure}
+
+Zeile \circled{3} der Wahrheitstabelle entspricht der Teilformel $\neg E_2 \wedge E_1 \wedge E_0$. Wir müssen also im \acs{KV}-Diagramm die Zelle suchen, die von $\neg E_2$, $E_1$ und $E_0$ abgedeckt wird. Dies ist durch die blaue Zelle in \autoref{figure-kv-diagramm-bsp-2} gegeben. Für die Zeilen \circled{1}, \circled{2} und \circled{4} können wir ebenso verfahren.
+
+\begin{important}
+Wir übertragen \textbf{keine} Nullen in das \ac{KV}-Diagramm!
+\end{important}
+
+Nachdem alle Einsen korrekt übertragen wurden, müssen wir möglichst \textbf{grosse Blöcke} bilden. Ein Block ist eine Gruppe von Einsen. Die Anzahl der Einsen pro Block muss eine $2$er-Potenz sein ($1$, $2$, $4$, $8$, $\dots$). Im \ac{KV}-Diagramm in \autoref{figure-kv-diagramm-bsp-2} können wir nicht alle Einsen in einen Block packen. Deshalb bilden wir zwei $2$er-Blöcke (siehe \autoref{figure-kv-diagramm-bsp-3}).
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[karnaugh, grp/.style n args={3}{#1,
+                      minimum width=#2\kmunitlength,
+                      minimum height=#3\kmunitlength,
+                      rounded corners=0.2\kmunitlength,
+                      rectangle, draw, very thick}]
+  \karnaughmap{3}{$A_0$}{{$E_2$}{$E_1$}{$E_0$}}{11~1 ~~~1}{
+  	\node[grp={red}{1.8}{0.9}](g1) at (1, 1.5) {};
+	\node[grp={red}{1.8}{0.9}](g2) at (2, 0.5) {};
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+  \draw[latex-, thick] (1.75,1.5) -- (5,1.5)  node[anchor=west] {$T_1$};
+  \draw[latex-, thick] (2.75,0.5) -- (5,0.5)  node[anchor=west] {$T_2$};
+\end{tikzpicture}
+\caption{Die beiden $2$er-Blöcke bestehen jeweils aus zwei Zellen.}
+\label{figure-kv-diagramm-bsp-3}
+\end{figure}
+
+\newpage
+
+Für jeden Block bilden wir nun \textbf{eine Teilformel}. Pro Block bestimmen wir alle \textbf{gemeinsamen Eingänge} und verknüpfen diese mit \textbf{Konjunktionen}. Anschliessend werden die Teilformeln mit \textbf{Disjunktionen} zur booleschen Formel in \ac{DNF} für $A_0$ zusammengesetzt.
+
+\begin{itemize}
+\item $T_1 = \neg E_1 \wedge \neg E_2$
+\begin{itemize}
+\item \textbf{Beide} Einsen sind in der Zeile $\neg E_1$ und \textbf{beide} Einsen sind in den Spalten $\neg E_2$.
+\end{itemize}
+\item $T_2 = E_0 \wedge E_1$
+\begin{itemize}
+\item \textbf{Beide} Einsen sind in den Spalten $E_0$ und \textbf{beide} Einsen sind in der Zeile $E_1$.
+\end{itemize}
+\end{itemize}
+
+Daraus ergibt sich dann folgendes Ergebnis:
+\begin{align*}
+A_0 = (\neg E_1 \wedge \neg E_2) \vee (E_0 \wedge E_1)
+\end{align*}
+
+\end{example}
+
+\section{\acs{KV}-Diagramme als Vorlage}
+
+Wir beschränken uns hier auf die Verwendung von \ac{KV}-Diagrammen mit bis zu \num{4} Eingängen.
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{1}{$A$}{{$E_0$}}{}{
+	\node (negE0) at (0.5, 1.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\caption{\num{1} Eingang}
+\label{figure-kv-diagramm-e-1}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{2}{$A$}{{$E_1$}{$E_0$}}{}{
+	\node (negE1) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE0) at (-0.35, 1.5) {\tiny $\neg E_1$};
+  }
+\end{tikzpicture}
+\caption{\num{2} Eingänge}
+\label{figure-kv-diagramm-e-2}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[htb]
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{3}{$A$}{{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\caption{\num{3} Eingänge}
+\label{figure-kv-diagramm-e-3}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\caption{\num{4} Eingänge}
+\label{figure-kv-diagramm-e-4}
+\end{minipage}
+\end{figure}
+
+\newpage
+
+\section{Regeln zur Blockbildung}
+
+Wir fassen hier nochmals die wichtigsten Regeln zur Blockbildung zusammen und zeigen einige spezielle Möglichkeiten der Blockbildung auf.
+
+\begin{enumerate}
+\item Blöcke dürfen \textbf{nicht} diagonal gebildet werden.
+\item Die Blockgrösse muss eine \textbf{$\mathbf{2}$er-Potenz} sein.
+\item Ein Block muss \textbf{so gross wie möglich} sein.
+\item Jede Eins muss \textbf{mindestens} in einem Block vorkommen.
+\item Blöcke \textbf{dürfen} sich überlappen.
+\item Blöcke \textbf{dürfen} (unter bestimmten Bedingungen) über den \say{Rand} gebildet werden.
+\item Je \textbf{weniger Blöcke}, desto \textbf{besser}.
+\end{enumerate}
+
+\subsection{Ausgewählte Beispiele}
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{3}{$A$}{{$E_2$}{$E_1$}{$E_0$}}{11~~ 1111}{
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\caption{\num{3} Eingänge}
+\label{figure-kv-diagramm-e-3-block-1}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{3}{$A$}{{$E_2$}{$E_1$}{$E_0$}}{1~1~ 1~1~}{
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\caption{\num{3} Eingänge}
+\label{figure-kv-diagramm-e-3-block-2}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{~11~ ~11~ ~11~ ~11~}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\caption{\num{4} Eingänge}
+\label{figure-kv-diagramm-e-4-block-1}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{1~~~ 1~~~ 1~~~ 1~~~}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\caption{\num{4} Eingänge}
+\label{figure-kv-diagramm-e-4-block-2}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{1~~~ 1~~~ ~~~~ 1~~~}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\caption{\num{4} Eingänge}
+\label{figure-kv-diagramm-e-4-block-3}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{1~11 1~1~ 1~11 1~1~}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\caption{\num{4} Eingänge}
+\label{figure-kv-diagramm-e-4-block-4}
+\end{minipage}
+\end{figure}
+
+\newpage
+
+\section{Übungen}
+
+Erstellen Sie pro \textbf{Übung} und \textbf{Ausgang} die \textbf{vereinfachte boolesche Formel} in \ac{DNF} mithilfe eines \ac{KV}-Diagramms. Wählen Sie das korrekte \ac{KV}-Diagramm aus und stellen Sie die Blöcke \textbf{sauber} dar.
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.2\textwidth}
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_1$ & $E_0$ & $A_0$ \\ \hline[2pt]
+0 & 0 & 1 \\ \hline
+0 & 1 & 0 \\ \hline
+1 & 0 & 1 \\ \hline
+1 & 1 & 1 \\ \hline
+\end{tblr}
+\caption*{Wahrheitstabelle}
+\end{minipage}
+\hfill
+\begin{minipage}{0.25\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{1}{$A_0$}{{$E_0$}}{}{
+	\node (negE0) at (0.5, 1.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.25\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{2}{$A_0$}{{$E_1$}{$E_0$}}{}{
+	\node (negE1) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE0) at (-0.35, 1.5) {\tiny $\neg E_1$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.25\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{3}{$A_0$}{{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\fillwithgrid	{1.5in}
+\end{figure}
+\end{exercise}
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.2\textwidth}
+\centering
+\begin{tblr}{|c|c|c||c|}
+\hline
+$E_2$ & $E_1$ & $E_0$ & $A_0$ \\ \hline[2pt]
+0 & 0 & 0 & 1 \\ \hline
+0 & 0 & 1 & 0 \\ \hline
+0 & 1 & 0 & 1 \\ \hline
+0 & 1 & 1 & 1 \\ \hline
+1 & 0 & 0 & 0 \\ \hline
+1 & 0 & 1 & 1 \\ \hline
+1 & 1 & 0 & 1 \\ \hline
+1 & 1 & 1 & 1 \\ \hline
+\end{tblr}
+\caption*{Wahrheitstabelle}
+\end{minipage}
+\hfill
+\begin{minipage}{0.25\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{1}{$A_0$}{{$E_0$}}{}{
+	\node (negE0) at (0.5, 1.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.25\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{2}{$A_0$}{{$E_1$}{$E_0$}}{}{
+	\node (negE1) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE0) at (-0.35, 1.5) {\tiny $\neg E_1$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.25\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{3}{$A_0$}{{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\fillwithgrid	{1.5in}
+\end{figure}
+\end{exercise}
+
+
+\newpage
+
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.2\textwidth}
+\centering
+\begin{tblr}{|c|c|c||c|}
+\hline
+$E_2$ & $E_1$ & $E_0$ & $A_0$ \\ \hline[2pt]
+0 & 0 & 0 & 0  \\ \hline
+0 & 0 & 1 & 1 \\ \hline
+0 & 1 & 0 & 1 \\ \hline
+0 & 1 & 1 & 1 \\ \hline
+1 & 0 & 0 & 0 \\ \hline
+1 & 0 & 1 & 0  \\ \hline
+1 & 1 & 0 & 1 \\ \hline
+1 & 1 & 1 & 1 \\ \hline
+\end{tblr}
+\caption*{Wahrheitstabelle}
+\end{minipage}
+\hfill
+\begin{minipage}{0.15\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{1}{$A_0$}{{$E_0$}}{}{
+	\node (negE0) at (0.5, 1.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{2}{$A_0$}{{$E_1$}{$E_0$}}{}{
+	\node (negE1) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE0) at (-0.35, 1.5) {\tiny $\neg E_1$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{3}{$A_0$}{{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\fillwithgrid	{1in}
+\end{figure}
+\end{exercise}
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.2\textwidth}
+\centering
+\adjustbox{max height=4cm}{%
+\begin{tblr}{|c|c|c|c||c|}
+\hline
+$E_3$ & $E_2$ & $E_1$ & $E_0$ & $A_0$ \\ \hline[2pt]
+0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 0 & 1 & 0 \\ \hline
+0 & 0 & 1 & 0 & 0 \\ \hline
+0 & 0 & 1 & 1 & 1 \\ \hline
+0 & 1 & 0 & 0 & 0  \\ \hline
+0 & 1 & 0 & 1 & 0 \\ \hline
+0 & 1 & 1 & 0 & 1 \\ \hline
+0 & 1 & 1 & 1 & 1 \\ \hline
+1 & 0 & 0 & 0 & 0 \\ \hline
+1 & 0 & 0 & 1 & 0 \\ \hline
+1 & 0 & 1 & 0 & 1 \\ \hline
+1 & 0 & 1 & 1 & 1 \\ \hline
+1 & 1 & 0 & 0 & 0 \\ \hline
+1 & 1 & 0 & 1 & 1 \\ \hline
+1 & 1 & 1 & 0 & 0 \\ \hline
+1 & 1 & 1 & 1 & 1 \\ \hline
+\end{tblr}
+}
+\caption*{Wahrheitstabelle}
+\label{table-exercise-kv-5}
+\end{minipage}
+\hfill
+\begin{minipage}{0.3\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{3}{$A_0$}{{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (0.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE02) at (3.5, 2.25) {\tiny $\neg E_0$};
+	\node (negE11) at (-0.35, 1.5) {\tiny $\neg E_1$};
+	\node (negE21) at (0.5, -.25) {\tiny $\neg E_2$};
+     	\node (negE22) at (1.5, -.25) {\tiny $\neg E_2$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+    \node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\fillwithgrid	{1in}
+\end{figure}
+\end{exercise}
+
+\newpage
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.2\textwidth}
+\centering
+\adjustbox{max height=4cm}{%
+\begin{tblr}{|c|c|c|c||c|c|}
+\hline
+$E_3$ & $E_2$ & $E_1$ & $E_0$ & $A_0$ & $A_1$ \\ \hline[2pt]
+0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 0 & 1 & 0 & 0 \\ \hline
+0 & 0 & 1 & 0 & 0 & 0 \\ \hline
+0 & 0 & 1 & 1 & 0 & 0 \\ \hline
+0 & 1 & 0 & 0 & 0 & 0  \\ \hline
+0 & 1 & 0 & 1 & 0 & 0 \\ \hline
+0 & 1 & 1 & 0 & 1 & 0 \\ \hline
+0 & 1 & 1 & 1 & 1 & 0 \\ \hline
+1 & 0 & 0 & 0 & 0 & 1 \\ \hline
+1 & 0 & 0 & 1 & 0 & 1 \\ \hline
+1 & 0 & 1 & 0 & 0 & 1 \\ \hline
+1 & 0 & 1 & 1 & 0 & 1 \\ \hline
+1 & 1 & 0 & 0 & 0 & 0 \\ \hline
+1 & 1 & 0 & 1 & 0 & 0 \\ \hline
+1 & 1 & 1 & 0 & 1 & 1 \\ \hline
+1 & 1 & 1 & 1 & 1 & 1 \\ \hline
+\end{tblr}
+}
+\caption*{Wahrheitstabelle}
+\end{minipage}
+\hfill
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+    \node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{tikzpicture}[karnaugh]
+\karnaughmap{4}{$A$}{{$E_3$}{$E_2$}{$E_1$}{$E_0$}}{}{
+	\node (negE01) at (4.35, 3.5) {\tiny $\neg E_3$};
+	\node (negE02) at (4.35, 2.5) {\tiny $\neg E_3$};
+	\node (negE11) at (0.5, -.25) {\tiny $\neg E_2$};
+    \node (negE12) at (1.5, -.25) {\tiny $\neg E_2$};
+	\node (negE12) at (-0.35, 3.5) {\tiny $\neg E_1$};
+	\node (negE22) at (-0.35, 0.5) {\tiny $\neg E_1$};
+	\node (negE31) at (0.5, 4.25) {\tiny $\neg E_0$};
+	\node (negE32) at (3.5, 4.25) {\tiny $\neg E_0$};
+  }
+\end{tikzpicture}
+\end{minipage}
+\fillwithgrid	{2in}
+\end{figure}
+\end{exercise}

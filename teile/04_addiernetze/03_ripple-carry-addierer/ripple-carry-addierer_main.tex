@@ -1,0 +1,165 @@
+% !TEX root = ../../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{ultimate_game}
+\chapterimagetitle{\uppercase{Ultimate Game}}
+\chapterimageurl{https://xkcd.com/393/}
+\chapterimagehover{RIP, Gary.}
+
+\chapter{Ripple-Carry-Addierer}
+\label{ch:ripple-carry-addierer}
+
+\vspace{-0.5cm}
+
+Wir führen nun die schriftliche Addition von zwei mehrstelligen Dualzahlen mit Hilfe eines Addiergitters durch. Dazu benötigen wir Volladdierer und einen Halbaddierer. Die Lernziele sind:\\
+
+\lernziel{\autoref{ch:ripple-carry-addierer}, \nameref{ch:ripple-carry-addierer}}{
+\begin{minipage}{\linewidth}
+$\square$ \hspace{0.1cm} Sie erklären, was ein Ripple-Carry-Addierer ist.\\
+$\square$ \hspace{0.1cm} Sie erstellen ein Addiernetz, um zwei $n$-stellige Dualzahlen zu addieren.
+\end{minipage}
+}
+
+\vspace{-0.8cm}
+
+\section{4-Bit-Ripple-Carry-Addierer}
+
+Durch eine Verkettung von \num{3} Volladdierern und einem Halbaddierer erhalten wir einen $4$-Bit-Addierer (siehe \autoref{figure-4bit-ripple-carry-adder}). Dieses Schaltnetz stellt ein Addiernetz dar und wird üblicherweise als \textbf{$\mathbf{4}$-Bit-Ripple-Carry-Addierer} (\acs{RCA}) bezeichnet. In diesem Addiernetz \say{rieselt} (engl. to ripple) der Übertrag von einem Volladdierer zum nächsten Volladdierer.
+
+\vspace{-0.25cm}
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.7\textwidth}
+\centering
+\begin{circuitikz}[american, transform shape]
+	\draw (0,0) node[dipchip, num pins=4, hide numbers, no topmark, external pins width=0, rotate=90] (HA) {\acs{HA}};
+	\draw (HA.pin 1) -- ++(0, -0.5) coordinate(extpinco0) node[above, yshift=-0.05cm, xshift=-0.3cm] (co0) {$c_{\text{out}}$};
+	\draw (HA.pin 2) -- ++(0, -1.5) coordinate(extpin) node[below] (s0) {$s_0$};
+	\draw (HA.pin 3) -- ++(0, 1.5) coordinate(extpin) node[above] (x0) {$x_0$};
+	\draw (HA.pin 4) -- ++(0, 1.5) coordinate(extpin) node[above] (y0) {$y_0$};
+	
+	\draw (-3,0) node[dipchip, num pins=6, hide numbers, no topmark, external pins width=0, rotate=90] (FA1) {\acs{FA}};
+	\draw (FA1.pin 1) -- ++(0, -0.5) coordinate(extpinco1) node[above, yshift=-0.05cm, xshift=-0.3cm] (co1) {$c_{\text{out}}$};
+	\draw (FA1.pin 3) -- ++(0, -1.5) coordinate(extpin) node[below] (s1) {$s_1$};
+	\draw (FA1.pin 4) -- ++(0, 0.5) coordinate(extpinci1) node[above] (ci1) {$c_{\text{in}}$};
+	\draw (FA1.pin 5) -- ++(0, 1.5) coordinate(extpin) node[above] (a1) {$x_1$};
+	\draw (FA1.pin 6) -- ++(0, 1.5) coordinate(extpin) node[above] (b1) {$y_1$};
+	\draw (extpinco0) --++(-1, 0) node[yshift=1.5cm, xshift=0.25cm] (c0) {$c_0$} |- (extpinci1);
+	
+	\draw (-6,0) node[dipchip, num pins=6, hide numbers, no topmark, external pins width=0, rotate=90] (FA2) {\acs{FA}};
+	\draw (FA2.pin 1) -- ++(0, -0.5) coordinate(extpinco2) node[above, yshift=-0.05cm, xshift=-0.3cm] (co2) {$c_{\text{out}}$};
+	\draw (FA2.pin 3) -- ++(0, -1.5) coordinate(extpin) node[below] (s2) {$s_2$};
+	\draw (FA2.pin 4) -- ++(0, 0.5) coordinate(extpinci2) node[above] (ci2) {$c_{\text{in}}$};
+	\draw (FA2.pin 5) -- ++(0, 1.5) coordinate(extpin) node[above] (a2) {$x_2$};
+	\draw (FA2.pin 6) -- ++(0, 1.5) coordinate(extpin) node[above] (b2) {$x_2$};
+	\draw (extpinco1) --++(-1, 0) node[yshift=1.5cm, xshift=0.25cm] (c1) {$c_1$} |- (extpinci2);
+	
+	\draw (-9,0) node[dipchip, num pins=6, hide numbers, no topmark, external pins width=0, rotate=90] (FA3) {\acs{FA}};
+	\draw (FA3.pin 1) -- ++(0, -1.5) coordinate(extpin) node[below] (co3) {$c_{\text{out}}$};
+	\draw (FA3.pin 3) -- ++(0, -1.5) coordinate(extpin) node[below] (s3) {$s_3$};
+	\draw (FA3.pin 4) -- ++(0, 0.5) coordinate(extpinci3) node[above] (ci3) {$c_{\text{in}}$};
+	\draw (FA3.pin 5) -- ++(0, 1.5) coordinate(extpin) node[above] (a3) {$x_3$};
+	\draw (FA3.pin 6) -- ++(0, 1.5) coordinate(extpin) node[above] (b3) {$y_3$};
+	\draw (extpinco2) --++(-1, 0) node[yshift=1.5cm, xshift=0.25cm] (c2) {$c_2$} |- (extpinci3);
+\end{circuitikz}
+\caption{Dieses Schaltnetz kann zwei $4$-Bit-Dualzahlen addieren. Es ist ein $4$-Bit-Ripple-Carry-Addierer als \protect\say{White Box}.}
+\label{figure-4bit-ripple-carry-adder}
+\end{minipage}
+\hfill
+\begin{minipage}{0.25\textwidth}
+\centering
+\begin{circuitikz}
+\ctikzset{multipoles/dipchip/width=2}
+\draw (0,0) node[dipchip, num pins=16, hide numbers, no topmark, draw only pins={1-8, 11-14, 9}](RCA1){$4$-Bit-\acs{RCA}};
+\node [right] at (RCA1.bpin 1) {$x_0$};
+\node [right] at (RCA1.bpin 2) {$x_1$};
+\node [right] at (RCA1.bpin 3) {$x_2$};
+\node [right] at (RCA1.bpin 4) {$x_3$};
+
+\node [right] at (RCA1.bpin 5) {$y_0$};
+\node [right] at (RCA1.bpin 6) {$y_1$};
+\node [right] at (RCA1.bpin 7) {$y_2$};
+\node [right] at (RCA1.bpin 8) {$y_3$};
+
+\node [left] at (RCA1.bpin 9) {$c_{\text{out}}$};
+
+\node [left] at (RCA1.bpin 11) {$s_0$};
+\node [left] at (RCA1.bpin 12) {$s_1$};
+\node [left] at (RCA1.bpin 13) {$s_2$};
+\node [left] at (RCA1.bpin 14) {$s_3$};
+\end{circuitikz}
+\caption{$4$-Bit-Ripple-Carry-Addierer als \protect\say{Black Box}.}
+\label{figure-4bit-ripple-carry-adder-blackbox}
+\end{minipage}
+\end{figure}
+
+\vspace{-0.9cm}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.6\textwidth}
+Wie bei der schriftlichen Addition (siehe \autoref{figure-addition-4bit}) wird Stelle für Stelle berechnet. Die Berechnung beginnt ganz \say{rechts} ($x_0$ bzw. $x_0$) und endet ganz links. Die Addition von einer Stelle ($x_0$ und $y_0$) ergibt die Summe für die entsprechende Stelle ($s_0$) und einen ausgehenden Übertrag ($c_{\text{out}}$). Der ausgehende Übertrag ($c_{\text{out}}$) aus dem vorherigen Bauteil muss dabei mit dem eingehenden Übertrag ($c_{\text{in}}$) aus dem nächsten Bauteil verbunden werden.
+\end{minipage}
+\hfill
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{tblr}{cccccc}
+   	& & $x_3$ & $x_2$ & $x_1$ & $x_0$ \\
++ 	& & $y_3$ & $y_2$ & $y_1$ & $y_0$ \\
+    	& {\scriptsize $c_3$} & {\scriptsize $c_2$} & {\scriptsize $c_1$} & {\scriptsize $c_0$} & \\
+\hline
+	& $s_4$ & $s_3$ & $s_2$ & $s_1$ & $s_0$ \\
+\end{tblr}
+\caption{Die erste Ziffer einer Dualzahl wird mit $x_0$ bzw. $y_0$ bezeichnet.}
+\label{figure-addition-4bit}
+\end{minipage}
+\end{figure}
+
+\section{Übungen}
+
+\begin{exercise}
+Erstellen Sie einen $6$-Bit-Ripple-Carry-Addierer (\say{White Box}), wie in \autoref{figure-4bit-ripple-carry-adder} dargestellt.
+\fillwithgrid	{2.5in}
+\end{exercise}
+
+\begin{exercise}
+Erstellen Sie einen $5$-Bit-Ripple-Carry-Addierer. Tragen Sie die beiden Dualzahlen $x = 10110$ und $y = 11001$ ein. Stellen Sie auch die Binärziffern der Summen und Überträge dar.
+\fillwithgrid	{3in}
+\end{exercise}
+
+\begin{exercise}
+Wie können wir mit einem $5$-Bit-Ripple-Carry-Addierer zwei $4$-Bit-Dualzahlen addieren? Verwenden Sie in Ihrer Erklärung ein konkretes Beispiel.
+\fillwithgrid	{\stretch{1}}
+\end{exercise}
+
+\newpage
+
+\begin{exercise}
+Es sei ein $n$-Bit-Ripple-Carry-Addierer gegeben. Beantworten Sie die folgenden Fragen.
+\begin{enumerate}
+\item Wie viele Bits dürfen die beiden Dualzahlen maximal haben, damit der Ripple-Carry-Addierer die beiden Dualzahlen addieren kann?
+
+\fillwithgrid	{0.5in}
+
+\item Wie viele Bits besitzt hat Summe maximal?
+
+\fillwithgrid	{0.5in}
+
+\item Eine \ac{CPU} ist eine Komponente eines Computers. Die \ac{CPU} enthält unter anderem ein Rechenwerk und Register (Speicher). Im Rechenwerk befindet sich unter anderem ein Addiernetz zum Addieren von Zahlen. Wie viele \textbf{Bits} können die Dualzahlen in \textbf{Ihrem} Computer für die Addition haben? Informieren Sie sich, wie Sie das herausfinden können.
+
+\fillwithgrid	{0.75in}
+
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+Sie besitzen \textbf{nur} Volladdierer und können die Eingänge dauerhaft mit $0$ oder $1$ belegen. Konstruieren Sie einen $4$-Bit-Ripple-Carry-Addierer.
+\fillwithgrid	{1.5in}
+\end{exercise}
+
+\begin{exercise}
+Wie sieht die \say{Black Box} (siehe \autoref{figure-4bit-ripple-carry-adder-blackbox}) für einen $4$-Bit-Ripple-Carry-Addierer aus, der nur aus Volladdierern besteht? Zeichnen Sie dann damit dann einen $8$-Bit-Ripple-Carry-Addierer.
+\fillwithgrid	{\stretch{1}}
+\end{exercise}

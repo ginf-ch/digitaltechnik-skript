@@ -1,0 +1,995 @@
+% !TEX root = ../../../main.tex
+
+\toggletrue{image}
+\toggletrue{imagehover}
+\chapterimage{logic_boat_3}
+\chapterimagetitle{\uppercase{Logic Boat 3}}
+\chapterimageurl{https://xkcd.com/1134/}
+\chapterimagehover{Or a cabbage, for that matter. The goat makes sense. Goats are fine.}
+
+\chapter{Grundlagen}
+\label{ch:schaltnetze-grundlagen}
+
+Um komplexere elektronische Bauteile herstellen zu können, müssen wir Logikgatter miteinander kombinieren. Wir sprechen von \textbf{Schaltnetzen}. Die Lernziele sind:\\
+
+\lernziel[\autoref{part:schaltnetze}, Schaltnetze]{\autoref{ch:schaltnetze-grundlagen}, \nameref{ch:schaltnetze-grundlagen}}{
+\begin{minipage}{\linewidth}
+$\square$ \hspace{0.1cm} Sie erklären, was ein Schaltnetz ist.\\
+$\square$ \hspace{0.1cm} Sie nennen die Rangfolge der booleschen Operatoren $\wedge$, $\vee$, und $\neg$.\\
+$\square$ \hspace{0.1cm} Sie erstellen zu einer booleschen Formel das zugehörige Schaltnetz.\\
+$\square$ \hspace{0.1cm} Sie erstellen zu einer booleschen Formel die zugehörige Wahrheitstabelle. 
+\end{minipage}
+}
+
+\section{Rangfolge der Booleschen Operatoren}
+
+Aus der Mathematik kennen Sie bereits die Rangfolge der arithmetischen Operatoren ($+$, $\cdot$, $-$, $\div$) und der Klammern. Diese Rangfolge legt eindeutig fest, wie eine Berechnung durchzuführen ist. Ein Beispiel zeugt \autoref{eq:mathe:bsp}.
+\begin{align}
+(2 + 4 \cdot 5) \div 3 = (2 + (4 \cdot 5)) \div 3 \label{eq:mathe:bsp}
+\end{align}
+Durch die Rangfolge aus \autoref{arithmetische-operatoren-rangfolge} wissen wir, dass die Gleichung wie folgt zu berechnen ist:
+
+\begin{enumerate}
+\item Berechne das Produkt von $4 \cdot 5$ (\say{Punkt-vor-Strich-Regel}).
+\item Addiere zum Produkt die Zahl $2$.
+\item Dividiere nun die Summe durch $3$.
+\end{enumerate}
+
+Auch für \textbf{boolesche Operatoren} gibt es eine \textbf{Rangfolge} (siehe \autoref{boolesche-operatoren-rangfolge}), damit bei \textbf{booleschen Formeln} mit \textbf{mehr als einem Operator} die Reihenfolge eindeutig definiert ist.
+
+\begin{figure}[ht]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tblr}{|c|[2pt]c|}
+\hline
+\textbf{Operator} & \textbf{Rang} \\ \hline[2pt]
+Klammern & $1$ \\ \hline
+$\cdot$ und $\div$ & $2$ \\ \hline
+$+$ und $-$  &  $3$ \\ \hline
+\end{tblr}
+\caption{Arithmetische Operatoren}
+\label{arithmetische-operatoren-rangfolge}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{tblr}{|c|[2pt]c|}
+\hline
+\textbf{Operator} & \textbf{Rang} \\ \hline[2pt]
+Klammern & $1$ \\ \hline
+$\neg$    &  $2$ \\ \hline
+$\wedge$     & $3$ \\ \hline
+$\vee$ & $4$ \\ \hline
+\end{tblr}
+\caption{Boolesche Operatoren}
+\label{boolesche-operatoren-rangfolge}
+\end{minipage}
+\end{figure}
+
+Wir zeigen im nächsten Abschnitt, wie wir mit der Rangfolge der booleschen Operatoren umgehen.
+
+\section{Konstruktion von Schaltnetzen}
+
+Wir zeigen nun an einem Beispiel, wie wir ein Schaltnetz für eine boolesche Formel erstellen.
+
+\begin{example}
+Wir übersetzen die \autoref{eq:bsp1} in ein Schaltnetz.
+\begin{align}
+A_0 = \neg E_0 \wedge E_1 \label{eq:bsp1}
+\end{align}
+Für eine boolesche Formel können wir zunächst die Klammern in der Rangfolge der booleschen Operatoren hinzufügen. \autoref{eq:bsp1} ergibt \autoref{eq:bsp1-klammern}.
+\begin{align}
+A_0 = (\neg E_0) \wedge E_1 \label{eq:bsp1-klammern}
+\end{align}
+Für \autoref{eq:bsp1-klammern} erstellen wir das Schaltnetz.
+
+\paragraph{Schaltnetz}
+
+\autoref{eq:bsp1-klammern} hat zwei Eingänge ($E_0$ und $E_1$). Wir zeichnen zunächst beide Eingänge.
+
+\begin{important}
+Eine Formel kann mehr als 2 Eingänge enthalten. Es ist auch möglich, dass ein Eingang mehrfach verwendet wird. Wir zeichnen jeden Eingang jedoch nur \textbf{einmal}.
+\end{important}
+
+Wir zeichnen zuerst $\neg E_0$, da dieser Teil in einer Klammer steht und somit einen höheren Rang als $\wedge$ hat. Das bedeutet, dass wir ausgehend von $E_0$ ein \texttt{NICHT}-Gatter zeichnen müssen. Wir erhalten folgendes Ergebnis:
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}
+\draw (0,0) node[european not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_0$}; 
+\draw (NOT1.in 1) ++ (0, -1) node[anchor=east] {$E_1$};
+\end{circuitikz}
+\end{figure}
+
+Wir benötigen ein \texttt{UND}-Gatter, da in der Formel $\wedge$ vorkommt. Links von $\wedge$ steht $(\neg E_0)$. Wir müssen also den \textbf{Ausgang} von $(\neg E_0)$ mit einem \textbf{Eingang} des \texttt{UND}-Gatters verbinden. Rechts von $\wedge$ steht $E_1$. Wir können also direkt \textbf{von $E_1$ aus} die Leitung mit dem \textbf{anderen} Eingang des \texttt{UND}-Gatters verbinden. Wir erhalten das Schaltnetz aus \autoref{bsp1-schaltnetz-zwischenstand}.
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,0) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_0$}; 
+\draw (NOT1.out) -- ++(0.5,0) node[and port, anchor=in 1] (AND1) {};
+\draw (NOT1.in 1) ++ (0, -1) node[anchor=east] {$E_1$} -- (0.5,-1) |- (AND1.in 2);
+\end{circuitikz}
+\caption{$(\neg E_0) \wedge E_1$}
+\label{bsp1-schaltnetz-zwischenstand}
+\end{minipage}
+\hfill
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,0) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_0$}; 
+\draw (NOT1.out) -- ++(0.5,0) node[and port, anchor=in 1] (AND1) {};
+\draw (NOT1.in 1) ++ (0, -1) node[anchor=east] {$E_1$} -- (0.5,-1) |- (AND1.in 2);
+\draw (AND1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+\caption{Schaltnetz für $A_0 = (\neg E_0) \wedge E_1$.}
+\label{bsp1-schaltnetz}
+\end{minipage}
+\end{figure}
+
+Abschliessend verbinden wir noch den \textbf{Ausgang} des \texttt{UND}-Gattes mit der Beschriftung $A_0$. Das endgültige Schaltnetz ist in \autoref{bsp1-schaltnetz} dargestellt.
+\end{example}
+
+\begin{important}
+Wenn eine boolesche Formel bereits Klammern enthält, werden diese nicht aufgelöst. Klammern haben immer den \textbf{höchsten} Rang.
+\end{important}
+
+\subsection{Vereinfachte Darstellung}
+
+Ein \texttt{NOT}-Gatter vor einem Eingang (siehe \autoref{bsp1-schaltnetz}) können wir auch vereinfacht darstellen. Dadurch erreichen wir eine kompakter Darstellung von Schaltnetzen.
+
+\begin{figure}[htb]
+\centering
+\begin{circuitikz}
+\draw (0,0) node[and port] (AND1) {}
+(AND1.in 1) node[anchor=east] {$E_0$} 
+(AND1.in 2) node[anchor=east] {$E_1$}
+(AND1.out) node[anchor=west] {$A_0$};
+\node at (AND1.bin 1) [notcirc, left]{};
+\end{circuitikz}
+\caption{Der Kreis am oberen Eingang des \texttt{UND}-Gatters stellt das \texttt{NICHT}-Gatter dar.}
+\label{bsp1-schaltnetz-kompakt-negation}
+\end{figure}
+
+\newpage
+
+\subsection{Übungen}
+
+Übersetzen Sie \textbf{pro Übung} die vorgegebene \textbf{boolesche Formel} in das entsprechende \textbf{Schaltnetz}. Sie müssen für die Schaltnetze kein Lineal verwenden. Eine \textbf{saubere Darstellung} ist ausreichend.
+
+\begin{exercise}
+$A_0 = E_0 \vee \neg E_1$
+\fillwithgrid{0.8in}
+\end{exercise}
+
+\begin{solution}
+\begin{figure}[H]
+\begin{flalign*}
+A_0 = E_0 \vee \neg E_1 = E_0 \vee (\neg E_1)&&
+\end{flalign*}
+\centering
+\begin{minipage}{0.6\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,-1) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_1$}; 
+\draw (NOT1.out) -- ++(0.5, 0) node[or port, anchor=in 2] (OR1) {};
+\draw (NOT1.in 1) ++ (0, 1) node[anchor=east] {$E_0$} -- (0.5, 0) |- (OR1.in 1);
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.3\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,0) node[or port] (OR1) {}
+(OR1.in 1) node[anchor=east] {$E_0$} 
+(OR1.in 2) node[anchor=east] {$E_1$}
+(OR1.out) node[anchor=west] {$A_0$};
+\node at (OR1.bin 2) [notcirc, left]{};
+\end{circuitikz}
+\caption*{Alternative Darstellung}
+\end{minipage}
+\end{figure}
+\end{solution}
+
+\begin{exercise}
+\label{ex-nand-schaltnetz}
+$A_0 = \neg (E_0 \wedge E_1)$
+\fillwithgrid{0.8in}
+\end{exercise}
+
+\begin{solution}
+\begin{figure}[htb]
+\begin{flalign*}
+A_0 = \neg (E_0 \wedge E_1)&&
+\end{flalign*}
+\centering
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[and port] (AND1) {} 
+(AND1.in 1) node[anchor=east] {$E_0$}
+(AND1.in 2) node[anchor=east] {$E_1$};
+\draw (2, 0) node[not port] (NOT1) {};
+\draw (NOT1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) -- (NOT1.in 1) node[anchor=east] {};
+\end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[nand port] (NAND1) {}
+(NAND1.in 1) node[anchor=east] {$E_0$} 
+(NAND1.in 2) node[anchor=east] {$E_1$}
+(NAND1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+\caption*{Das Schaltnetz entspricht dem \texttt{NAND}-Gatter.}
+\end{minipage}
+\end{figure}
+\end{solution}
+
+\begin{exercise}
+\label{ex-nor-schaltnetz}
+$A_0 = \neg (E_0 \vee E_1)$
+\fillwithgrid{0.8in}
+\end{exercise}
+
+\begin{solution}
+\begin{figure}[H]
+\begin{flalign*}
+A_0 = \neg (E_0 \vee E_1)&&
+\end{flalign*}
+\centering
+\begin{minipage}{0.5\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[or port] (OR1) {} 
+(OR1.in 1) node[anchor=east] {$E_0$}
+(OR1.in 2) node[anchor=east] {$E_1$};
+\draw (2, 0) node[not port] (NOT1) {};
+\draw (NOT1.out) node[anchor=west] {$A_0$};
+\draw (OR1.out) -- (NOT1.in 1) node[anchor=east] {};
+\end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[nor port] (NOR1) {}
+(NOR1.in 1) node[anchor=east] {$E_0$} 
+(NOR1.in 2) node[anchor=east] {$E_1$}
+(NOR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+\caption*{Das Schaltnetz entspricht dem \texttt{NOR}-Gatter.}
+\end{minipage}
+\end{figure}
+\end{solution}
+
+\begin{exercise}
+\label{ex-xor-schaltnetz}
+$A_0 = E_0 \wedge \neg E_1 \vee \neg E_0 \wedge E_1$
+\fillwithgrid{\stretch{1}}
+\end{exercise}
+
+\begin{solution}
+\begin{figure}[H]
+\begin{flalign*}
+A_0 = E_0 \wedge \neg E_1 \vee \neg E_0 \wedge E_1 = (E_0 \wedge (\neg E_1)) \vee ((\neg E_0) \wedge E_1)&&
+\end{flalign*}
+\centering
+\begin{minipage}{0.6\textwidth}
+\centering
+\begin{circuitikz}
+\draw (-4.5, 0.5) node[not port] (NOT1) {};
+\draw (-2, 1) node[and port] (AND1) {};
+\draw (-4.5, -0.5) node[not port] (NOT2) {};
+\draw (-2, -1) node[and port] (AND2) {};
+\draw (0, 0) node[or port] (OR1) {};
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) |- (OR1.in 1);
+\draw (AND2.out) |- (OR1.in 2);
+\draw (-7.25, 1) node (E0) {$E_0$};
+\draw (-7.25, -1) node (E1) {$E_1$};
+\draw (E0)[xshift = 0.25cm] |- (-6.5,  1) node[circle, fill, inner sep=1pt] (E0cross) {} |- (AND1.in 1);
+\draw (E1)[xshift = 0.25cm] |- (-6.75,  -1) node[circle, fill, inner sep=1pt] (E1cross) {} |- (AND2.in 2);
+\draw (E1cross) |- (NOT1.in 1);
+\draw (E0cross) |- (NOT2.in 1);
+\draw (NOT1.out) |- (AND1.in 2);
+\draw (NOT2.out) |- (AND2.in 1);
+\end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{circuitikz}
+\draw (-2, 1) node[and port] (AND1) {};
+\draw (-2, -1) node[and port] (AND2) {};
+\draw (0, 0) node[or port] (OR1) {};
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) |- (OR1.in 1);
+\draw (AND2.out) |- (OR1.in 2);
+\draw (-4.5, 1) node (E0) {$E_0$};
+\draw (-4.5, -1) node (E1) {$E_1$};
+\draw (E0)[xshift = 0.25cm] |- (-4.25,  1) node[circle, fill, inner sep=1pt] (E0cross) {} |- (AND1.in 1);
+\draw (E1)[xshift = 0.25cm] |- (-4,  -1) node[circle, fill, inner sep=1pt] (E1cross) {} |- (AND2.in 2);
+\node at (AND1.bin 2) [notcirc, left]{};
+\node at (AND2.bin 1) [notcirc, left]{};
+\draw (E1cross) |- (AND1.in 2);
+\draw (E0cross) |- (AND2.in 1);
+\end{circuitikz}
+\caption*{Alternative Darstellung}
+\end{minipage}
+\hfill
+\begin{minipage}{\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[xor port] (XOR1) {}
+(XOR1.in 1) node[anchor=east] {$E_0$} 
+(XOR1.in 2) node[anchor=east] {$E_1$}
+(XOR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+\caption*{Die Schaltnetze entsprechen dem \texttt{XOR}-Gatter.}
+\end{minipage}
+\end{figure}
+\end{solution}
+
+\newpage
+
+\begin{exercise}
+\label{ex-xnor-schaltnetz}
+$A_0 = E_0 \wedge E_1 \vee \neg E_0 \wedge \neg E_1$
+\fillwithgrid{2.5in}
+\end{exercise}
+
+\begin{solution}
+\begin{figure}[H]
+\begin{flalign*}
+A_0 = E_0 \wedge E_1 \vee \neg E_0 \wedge \neg E_1 = (E_0 \wedge E_1) \vee ((\neg E_0) \wedge (\neg E_1))&&
+\end{flalign*}
+\centering
+\begin{minipage}{0.6\textwidth}
+\centering
+\begin{circuitikz}
+\draw (-2, 1) node[and port] (AND1) {};
+\draw (-4.5, -1.5) node[not port] (NOT1) {};
+\draw (-4.5, -0.5) node[not port] (NOT2) {};
+\draw (-2, -1) node[and port] (AND2) {};
+\draw (0, 0) node[or port] (OR1) {};
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) |- (OR1.in 1);
+\draw (AND2.out) |- (OR1.in 2);
+\draw (-7.25, 1) node (E0) {$E_0$};
+\draw (-7.25, -1) node (E1) {$E_1$};
+\draw (E0)[xshift = 0.25cm] |- (-6.5,  1) node[circle, fill, inner sep=1pt] (E0cross) {} |- (AND1.in 1);
+\draw (E1)[xshift = 0.25cm] |- (-6.75,  -1) node[circle, fill, inner sep=1pt] (E1cross) {} |- (AND1.in 2);
+\draw (E1cross) |- (NOT1.in 1);
+\draw (E0cross) |- (NOT2.in 1);
+\draw (NOT2.out) |- (AND2.in 1);
+\draw (NOT1.out) |- (AND2.in 2);
+\end{circuitikz}
+\end{minipage}
+\hfill
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{circuitikz}
+\draw (-2, 1) node[and port] (AND1) {};
+\draw (-2, -1) node[and port] (AND2) {};
+\draw (0, 0) node[or port] (OR1) {};
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) |- (OR1.in 1);
+\draw (AND2.out) |- (OR1.in 2);
+\draw (-4.5, 1) node (E0) {$E_0$};
+\draw (-4.5, -1) node (E1) {$E_1$};
+\draw (E0)[xshift = 0.25cm] |- (-4.25,  1) node[circle, fill, inner sep=1pt] (E0cross) {} |- (AND1.in 1);
+\draw (E1)[xshift = 0.25cm] |- (-4,  -1) node[circle, fill, inner sep=1pt] (E1cross) {} |- (AND1.in 2);
+\node at (AND2.bin 1) [notcirc, left]{};
+\node at (AND2.bin 2) [notcirc, left]{};
+\draw (E0cross) |- (AND2.in 1);
+\draw (E1cross) |- (AND2.in 2);
+\end{circuitikz}
+\caption*{Alternative Darstellung}
+\end{minipage}
+\hfill
+\begin{minipage}{\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[xnor port] (XNOR1) {}
+(XNOR1.in 1) node[anchor=east] {$E_0$} 
+(XNOR1.in 2) node[anchor=east] {$E_1$}
+(XNOR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+\caption*{Das Schaltnetz entspricht dem \texttt{XNOR}-Gatter.}
+\end{minipage}
+\end{figure}
+\end{solution}
+
+\begin{exercise}[subtitle={Zusatzaufgabe}]
+\label{exercise-xor-nor-nand-xnor}
+Die Schaltnetze aus den letzten vier Übungen kommen sehr häufig vor. Deshalb ist es möglich, \textbf{das Schaltnetz} direkt als eigenes \textbf{Logikgatter} zu kaufen. Für die Logikgatter werden die Bezeichnungen und Darstellungen aus \autoref{table-exercise-extended-logic-gates} benutzt. Füllen Sie \autoref{table-exercise-extended-logic-gates} wie folgt aus:
+
+\begin{enumerate}
+\item[a)] Fügen Sie unter \say{Beschreibung} für jedes Logikgatter einen Satz hinzu, welcher erklärt, wann die \say{Glühlampe} leuchtet. \textbf{Simulieren} Sie dazu die Logikgatter mit \textbf{Logicly}.
+\item[b)] Tragen Sie für jedes Logikgatter das \textbf{dazugehörige Schaltnetz} ein, in dem Sie auf die vorherigen Übungen verweisen (\textbf{Übung \ref{ex-nand-schaltnetz}}, \textbf{Übung \ref{ex-nor-schaltnetz}}, \textbf{Übung \ref{ex-xor-schaltnetz}} oder \textbf{Übung \ref{ex-xnor-schaltnetz}}).
+\item[c)] Tragen Sie unter \say{Formel} auch die passende Formel aus den \textbf{vorherigen Übungen} ein.
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\begin{tblr}{|Q[c, m, 3cm]|Q[c, m, 2.5cm]|c|Q[c, m, 6cm]|}
+\hline
+\textbf{Bezeichnung} & \textbf{Darstellung} & \textbf{Schaltnetz} &  \textbf{Formel} \\ \hline[2pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{XOR}} \\
+(e\textbf{x}clusive \textbf{or}, \\ dt. entweder oder)
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[xor port] (A) {};
+\end{circuitikz}
+&
+&
+\\ \hline
+ & { \SetCell[c=3]{l} \textbf{Beschreibung}: \\ ~}& & \\ \hline[1pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{NAND}} \\
+(\textbf{n}ot \textbf{and})
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[nand port] (A) {};
+\end{circuitikz}
+&
+&
+\\ \hline
+ & { \SetCell[c=3]{l} \textbf{Beschreibung}: \\ ~}& & \\ \hline[1pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{XNOR}} \\
+(e\textbf{x}clusive \textbf{n}ot \textbf{or}, dt. Äquivalenz)
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[xnor port] (A) {};
+\end{circuitikz}
+&
+&
+\\ \hline
+ & { \SetCell[c=3]{l} \textbf{Beschreibung}: \\ ~}& & \\ \hline[1pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{NOR}} \\
+(\textbf{n}ot \textbf{or})
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[nor port] (A) {};
+\end{circuitikz}
+&
+&
+\\ \hline
+ & { \SetCell[c=3]{l} \textbf{Beschreibung}: \\ ~}& & \\ \hline[1pt]
+\end{tblr}
+\caption{Häufige Logikgatter, welche aus Grundgattern zusammengesetzt sind.}
+\label{table-exercise-extended-logic-gates}
+\end{table}
+\end{exercise}
+
+\begin{solution}
+\begin{table}[H]
+\centering
+\begin{tblr}{|Q[c, m, 2.9cm]|Q[c, m, 3.25cm]|c|Q[c, m, 5.15cm]|}
+\hline
+\textbf{Bezeichnung} & \textbf{Darstellung} & \textbf{Schaltnetz} &  \textbf{Formel} \\ \hline[2pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{XOR}} \\
+(e\textbf{x}clusive \textbf{or}, \\ dt. entweder oder)
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[xor port] (XOR1) {}
+(XOR1.in 1) node[anchor=east] {$E_0$} 
+(XOR1.in 2) node[anchor=east] {$E_1$}
+(XOR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+&
+Übung \ref{ex-xor-schaltnetz}
+&\begin{align*}
+A_0 & = (E_0 \wedge (\neg E_1)) \vee ((\neg E_0) \wedge E_1) \\
+& = E_0 \oplus E_1 = E_0 \text{~XOR~} E_1
+\end{align*}
+\\ \hline
+ & { \SetCell[c=3]{l} \small \textbf{Beschreibung}: $A_0$ leuchtet, wenn entweder $E_0$ oder $E_1$ eingeschaltet ist.}& & \\ \hline[1pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{NAND}} \\
+(\textbf{n}ot \textbf{and})
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[nand port] (NAND1) {}
+(NAND1.in 1) node[anchor=east] {$E_0$} 
+(NAND1.in 2) node[anchor=east] {$E_1$}
+(NAND1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+&
+Übung \ref{ex-nand-schaltnetz}
+&
+$A_0 = \neg (E_0 \wedge E_1)$
+\\ \hline
+ & { \SetCell[c=3]{l} \small\textbf{Beschreibung}: Es darf höchstens ein Schalter eingeschaltet sein,\\ damit $A_0$ leuchtet.}& & \\ \hline[1pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{XNOR}} \\
+(e\textbf{x}clusive \textbf{n}ot \textbf{or}, dt. Äquivalenz)
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[xnor port] (XNOR1) {}
+(XNOR1.in 1) node[anchor=east] {$E_0$} 
+(XNOR1.in 2) node[anchor=east] {$E_1$}
+(XNOR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+&
+Übung \ref{ex-xnor-schaltnetz}
+&
+$A_0 = (E_0 \wedge E_1) \vee ((\neg E_0) \wedge (\neg E_1))$
+\\ \hline
+ & { \SetCell[c=3]{l} \small \textbf{Beschreibung}: Entweder sind beide Schalter ein-\\ oder ausgeschaltet, so dass $A_0$ leuchtet.}& & \\ \hline[1pt]
+\SetCell[r=2]{m}
+{
+\textbf{\texttt{NOR}} \\
+(\textbf{n}ot \textbf{or})
+}
+&
+\begin{circuitikz}[baseline={(current bounding box.center)}]
+\draw (0, 0) node[nor port] (NOR1) {}
+(NOR1.in 1) node[anchor=east] {$E_0$} 
+(NOR1.in 2) node[anchor=east] {$E_1$}
+(NOR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+&
+Übung \ref{ex-nor-schaltnetz}
+&
+$A_0 = \neg (E_0 \vee E_1)$
+\\ \hline
+ & { \SetCell[c=3]{l} \small\textbf{Beschreibung}: Damit $A_0$ leuchtet, darf kein Schalter eingeschaltet sein.}& & \\ \hline[1pt]
+\end{tblr}
+\end{table}
+\end{solution}
+
+\newpage
+
+\section{Ausfüllen von Wahrheitstabellen}
+
+Im Folgenden wird gezeigt, wie eine Wahrheitstabelle für eine boolesche Formel erstellt wird.
+
+\begin{example}
+\label{example-wahrheitstabelle-ausfuellen-bsp}
+Die folgende boolesche Formel ist gegeben:
+\begin{align}
+A_0 = (\neg E_0) \wedge E_1
+\end{align}
+Wir erstellen nun die zugehörige Wahrheitstabelle (siehe \autoref{table-wahrheitstabelle-bsp-leer}).
+
+\begin{table}[htb]
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_1$ & $E_0$ & $A_0 = \neg E_0 \wedge E_1$ \\ \hline[2pt]
+$0$    	&  $0$     	&  ?	\\ \hline
+$0$     	& $1$     	&  ?	\\ \hline
+$1$ 		& $0$      	&  ? 	\\ \hline
+$1$     	& $1$     	&  ?	\\ \hline
+\end{tblr}
+\caption{Die vier Werte für den Ausgang $A_0$ sind gesucht.}
+\label{table-wahrheitstabelle-bsp-leer}
+\end{table}
+
+Wir haben zwei Eingänge, somit vier Zeilen. Für jede Belegung prüfen wir, ob der Ausgang $0$ oder $1$ ist. Wir können das Schritt-für-Schritt machen.
+\end{example}
+
+\begin{important}
+Eine Wahrheitstabelle mit \textbf{zwei Eingängen} hat \textbf{vier Zeilen}. Eine Wahrheitstabelle mit \textbf{drei Eingängen} hat \textbf{acht Zeilen}. Eine Wahrheitstabelle mit $n$ Eingängen hat $2^n$ Zeilen.
+\end{important}
+
+\subsection{Das Ausfüllen der Wahrheitstabelle mithilfe des Schaltnetzes}
+
+Ist das passende Schaltnetz zur booleschen Formel vorhanden, dann notieren wir nacheinander jede Belegung in das Schaltnetz und lassen die Werte durch das Schaltnetz \say{fliessen}. Wir tragen dann den Wert am Ausgang in die Wahrheitstabelle ein.
+
+\begin{example}
+\label{example-wahrheitstabelle-ausfuellen-bsp-schaltnetz}
+
+Wir setzen \autoref{example-wahrheitstabelle-ausfuellen-bsp} fort. Dazu füllen wir \autoref{table-wahrheitstabelle-bsp-leer} nun Schritt-für-Schritt aus.
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.475\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,1) node (Header) {\textbf{1. Belegung: $E_0 = 0$ und $E_1 = 0$}};
+\draw (0,0) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_0$}; 
+\draw (NOT1.out) -- ++(0.5,0) node[and port, anchor=in 1] (AND1) {};
+\draw (NOT1.in 1) ++ (0, -1) node[anchor=east] {$E_1$} -- (0.5,-1) |- (AND1.in 2);
+\draw (AND1.out) node[anchor=west] {$A_0$};
+\node at (-1.75,0.25) {$0$};
+\node at (-1.75,-1.25) {$0$};
+\node at (0.15,0.25) {$1$};
+\node at (0.75,0.25) {$1$};
+\node at (0.75,-0.8) {$0$};
+\node at (2.75,0.1) {$0$};
+\end{circuitikz}
+\caption*{Das \texttt{NICHT} macht aus der $0$ von $E_0$ eine $1$. Am \texttt{UND} liegt deshalb oben eine $1$ und unten eine $0$ an. Dies ergibt am Ausgang $0$.}
+\end{minipage}
+\hfill
+\begin{minipage}{0.475\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,1) node (Header) {\textbf{2. Belegung: $E_0 = 1$ und $E_1 = 0$}};
+\draw (0,0) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_0$}; 
+\draw (NOT1.out) -- ++(0.5,0) node[and port, anchor=in 1] (AND1) {};
+\draw (NOT1.in 1) ++ (0, -1) node[anchor=east] {$E_1$} -- (0.5,-1) |- (AND1.in 2);
+\draw (AND1.out) node[anchor=west] {$A_0$};
+\node at (-1.75,0.25) {$1$};
+\node at (-1.75,-1.25) {$0$};
+\node at (0.15,0.25) {$0$};
+\node at (0.75,0.25) {$0$};
+\node at (0.75,-0.8) {$0$};
+\node at (2.75,0.1) {$0$};
+\end{circuitikz}
+\caption*{Das \texttt{NICHT} macht aus der $1$ von $E_0$ eine $0$. Am \texttt{UND} liegt deshalb oben eine $0$ und unten eine $0$ an. Dies ergibt am Ausgang $0$.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.475\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,1) node (Header) {\textbf{3. Belegung: $E_0 = 0$ und $E_1 = 1$}};
+\draw (0,0) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_0$}; 
+\draw (NOT1.out) -- ++(0.5,0) node[and port, anchor=in 1] (AND1) {};
+\draw (NOT1.in 1) ++ (0, -1) node[anchor=east] {$E_1$} -- (0.5,-1) |- (AND1.in 2);
+\draw (AND1.out) node[anchor=west] {$A_0$};
+\node at (-1.75,0.25) {$0$};
+\node at (-1.75,-1.25) {$1$};
+\node at (0.15,0.25) {$1$};
+\node at (0.75,0.25) {$1$};
+\node at (0.75,-0.8) {$1$};
+\node at (2.75,0.1) {$1$};
+\end{circuitikz}
+\caption*{Das \texttt{NICHT} macht aus der $0$ von $E_0$ eine $1$. Am \texttt{UND} liegt deshalb oben eine $1$ unten eine $1$ an. Dies ergibt am Ausgang $1$.}
+\end{minipage}
+\hfill
+\begin{minipage}{0.475\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,1) node (Header) {\textbf{4. Belegung: $E_0 = 1$ und $E_1 = 1$}};
+\draw (0,0) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_0$}; 
+\draw (NOT1.out) -- ++(0.5,0) node[and port, anchor=in 1] (AND1) {};
+\draw (NOT1.in 1) ++ (0, -1) node[anchor=east] {$E_1$} -- (0.5,-1) |- (AND1.in 2);
+\draw (AND1.out) node[anchor=west] {$A_0$};
+\node at (-1.75,0.25) {$1$};
+\node at (-1.75,-1.25) {$1$};
+\node at (0.15,0.25) {$0$};
+\node at (0.75,0.25) {$0$};
+\node at (0.75,-0.8) {$1$};
+\node at (2.75,0.1) {$0$};
+\end{circuitikz}
+\caption{Das \texttt{NICHT} macht aus der $1$ von $E_0$ eine $0$. Am \texttt{UND} liegt deshalb oben eine $0$ und unten eine $1$ an. Dies ergibt am Ausgang $0$.}
+\end{minipage}
+\end{figure}
+\end{example}
+
+\subsection{Das Ausfüllen der Wahrheitstabelle mithilfe der booleschen Formel}
+
+Ist eine Boolesche Formel gegeben, so kann man die Wahrheitstabelle ausfüllen, indem man jede Belegung in die Formel einsetzt und dann die Formel auswertet. Dieses Prinzip kennen Sie bereits aus der Mathematik, wie das folgende Beispiel zeigt.
+
+\begin{example}
+Wir können das Volumen einer Kugel mit der Formel $V = \frac{4}{3} \cdot \pi \cdot r^3$ berechnen. Wenn wir nun das Volumen für den Radius $\qty{2}{\centi\metre}$ berechnen wollen, setzen wir den Wert in die Formel ein und berechnen das Ergebnis.
+\begin{align}
+r = \qty{2}{\centi\metre} \Rightarrow V = \frac{4}{3} \cdot \pi \cdot (\qty{2}{\centi\metre})^3 \approx \qty{33,51}{\cubic\centi\metre}
+\end{align}
+\end{example}
+
+Das gleiche Prinzip wenden wir nun auf boolesche Formeln an. Wir ersetzen die Eingänge in der Formel durch eine Belegung und berechnen das Ergebnis.
+
+\begin{example}
+Wir setzen \autoref{example-wahrheitstabelle-ausfuellen-bsp} erneut fort und bestimmen für $A_0 = \neg E_0 \wedge E_1 = (\neg E_0) \wedge E_1$ die fehlenden Werte der Wahrheitstabelle.
+\begin{itemize}
+\item $E_0 = 0$ und $E_1 = 0 \Rightarrow A_0 = (\overbrace{\neg 0}^{\text{Def.~}\texttt{NICHT}}) \wedge 0 = (1) \wedge 0 = \overbrace{1 \wedge 0}^{\text{Def.~}\texttt{UND}} = 0$.
+\item $E_0 = 1$ und $E_1 = 0 \Rightarrow A_0 = (\neg 1) \wedge 0 = (0) \wedge 0 = 0 \wedge 0 = 0$.
+\item $E_0 = 0$ und $E_1 = 1 \Rightarrow A_0 = (\neg 0) \wedge 1 = (1) \wedge 1 = 1 \wedge 1 = 1$.
+\item $E_0 = 1$ und $E_1 = 1 \Rightarrow A_0 = (\neg 1) \wedge 1 = (0) \wedge 1 = 0 \wedge 1 = 0$. 
+\end{itemize}
+\end{example}
+
+Unabhängig davon, welche Methode wir anwenden, erhalten wir die gleichen Ergebnisse für die Ausgänge einer Wahrheitstabelle.
+
+\begin{example}
+Sowohl die Methode mit dem Schaltnetz, als auch die Methode mit der booleschen Formel ergeben die Wahrheitstabelle aus \autoref{table-wahrheitstabelle-bsp-voll}.
+
+\begin{table}[htb]
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_1$ & $E_0$ & $A_0 = \neg E_0 \wedge E_1$ \\ \hline[2pt]
+$0$    	&  $0$     	&  0	\\ \hline
+$0$     	& $1$     	&  0	\\ \hline
+$1$ 		& $0$      	&  1 	\\ \hline
+$1$     	& $1$     	&  0	\\ \hline
+\end{tblr}
+\caption{Die vier Werte für den Ausgang $A_0$ wurden berechnet.}
+\label{table-wahrheitstabelle-bsp-voll}
+\end{table}
+\end{example}
+
+\subsection{Übungen}
+
+Erstellen Sie \textbf{pro Übung} für die vorgegebene \textbf{boolesche Formel} die entsprechende \textbf{Wahrheitstabelle}. Achten Sie auf eine \textbf{saubere Darstellung} der Spalten und Zeilen!
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0,-1) node[not port] (NOT1) {}
+(NOT1.in 1) node[anchor=east] {$E_1$}; 
+\draw (NOT1.out) -- ++(0.5, 0) node[or port, anchor=in 2] (OR1) {};
+\draw (NOT1.in 1) ++ (0, 1) node[anchor=east] {$E_0$} -- (0.5, 0) |- (OR1.in 1);
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\end{circuitikz}
+\caption*{$A_0 = E_0 \vee \neg E_1$}
+\end{minipage}
+\hfill
+\begin{minipage}{0.6\textwidth}
+\centering
+\fillwithgrid{1in}
+\end{minipage}
+\end{figure}
+\end{exercise}
+
+\begin{solution}
+\begin{table}[H]
+\begin{flalign*}
+A_0 = E_0 \vee \neg E_1 = E_0 \vee (\neg E_1)&&
+\end{flalign*}
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_0$ 	& 	$E_1$ 	& 	$A_0 = E_0 \vee (\neg E_1)$ 	\\ \hline[2pt]
+$0$		&  	$0$     	& 	$1$    					\\ \hline
+$0$		& 	$1$     	& 	$0$   					\\ \hline
+$1$ 		& 	$0$      	& 	$1$   					\\ \hline
+$1$		& 	$1$     	& 	$1$     					\\ \hline
+\end{tblr}
+\end{table}
+\end{solution}
+
+\newpage
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[and port] (AND1) {} 
+(AND1.in 1) node[anchor=east] {$E_0$}
+(AND1.in 2) node[anchor=east] {$E_1$};
+\draw (2, 0) node[not port] (NOT1) {};
+\draw (NOT1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) -- (NOT1.in 1) node[anchor=east] {};
+\end{circuitikz}
+\caption*{$A_0 = \neg (E_0 \wedge E_1)$}
+\end{minipage}
+\hfill
+\begin{minipage}{0.6\textwidth}
+\centering
+\fillwithgrid{1in}
+\end{minipage}
+\end{figure}
+\end{exercise}
+
+\begin{solution}
+\begin{table}[H]
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_0$ 	& 	$E_1$ 	& 	$A_0 = \neg (E_0 \wedge E_1)$ 	\\ \hline[2pt]
+$0$		&  	$0$     	& 	$1$    						\\ \hline
+$0$		& 	$1$     	& 	$1$   						\\ \hline
+$1$ 		& 	$0$      	& 	$1$   						\\ \hline
+$1$		& 	$1$     	& 	$0$     						\\ \hline
+\end{tblr}
+\end{table}
+\end{solution}
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{circuitikz}
+\draw (0, 0) node[or port] (OR1) {} 
+(OR1.in 1) node[anchor=east] {$E_0$}
+(OR1.in 2) node[anchor=east] {$E_1$};
+\draw (2, 0) node[not port] (NOT1) {};
+\draw (NOT1.out) node[anchor=west] {$A_0$};
+\draw (OR1.out) -- (NOT1.in 1) node[anchor=east] {};
+\end{circuitikz}
+\caption*{$A_0 = \neg (E_0 \vee E_1)$}
+\end{minipage}
+\hfill
+\begin{minipage}{0.6\textwidth}
+\centering
+\fillwithgrid{1in}
+\end{minipage}
+\end{figure}
+\end{exercise}
+
+\begin{solution}
+\begin{table}[H]
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_0$ 	& 	$E_1$ 	& 	$A_0 = \neg (E_0 \vee E_1)$ 	\\ \hline[2pt]
+$0$		&  	$0$     	& 	$1$    						\\ \hline
+$0$		& 	$1$     	& 	$0$   						\\ \hline
+$1$ 		& 	$0$      	& 	$0$   						\\ \hline
+$1$		& 	$1$     	& 	$0$     						\\ \hline
+\end{tblr}
+\end{table}
+\end{solution}
+
+\begin{exercise}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.35\textwidth}
+\centering
+\adjustbox{max width=\textwidth}{%
+\begin{circuitikz}
+\draw (-4.5, 0.5) node[not port] (NOT1) {};
+\draw (-2, 1) node[and port] (AND1) {};
+\draw (-4.5, -0.5) node[not port] (NOT2) {};
+\draw (-2, -1) node[and port] (AND2) {};
+\draw (0, 0) node[or port] (OR1) {};
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) |- (OR1.in 1);
+\draw (AND2.out) |- (OR1.in 2);
+\draw (-7.25, 1) node (E0) {$E_0$};
+\draw (-7.25, -1) node (E1) {$E_1$};
+\draw (E0)[xshift = 0.25cm] |- (-6.5,  1) node[circle, fill, inner sep=1pt] (E0cross) {} |- (AND1.in 1);
+\draw (E1)[xshift = 0.25cm] |- (-6.75,  -1) node[circle, fill, inner sep=1pt] (E1cross) {} |- (AND2.in 2);
+\draw (E1cross) |- (NOT1.in 1);
+\draw (E0cross) |- (NOT2.in 1);
+\draw (NOT1.out) |- (AND1.in 2);
+\draw (NOT2.out) |- (AND2.in 1);
+\end{circuitikz}
+}
+\caption*{$A_0 = E_0 \wedge \neg E_1 \vee \neg E_0 \wedge E_1$}
+\end{minipage}
+\hfill
+\begin{minipage}{0.6\textwidth}
+\centering
+\fillwithgrid{1in}
+\end{minipage}
+\end{figure}
+\end{exercise}
+
+\begin{solution}
+\begin{table}[H]
+\begin{flalign*}
+A_0 = E_0 \wedge \neg E_1 \vee \neg E_0 \wedge E_1 = (E_0 \wedge (\neg E_1)) \vee ((\neg E_0) \wedge E_1)&&
+\end{flalign*}
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_0$ 	& 	$E_1$ 	& 	$A_0 = E_0 \wedge \neg E_1 \vee \neg E_0 \wedge E_1$ 	\\ \hline[2pt]
+$0$		&  	$0$     	& 	$0$	\\ \hline
+$0$		& 	$1$     	& 	$1$	\\ \hline
+$1$ 		& 	$0$      	& 	$1$	\\ \hline
+$1$		& 	$1$     	& 	$0$	\\ \hline
+\end{tblr}
+\end{table}
+\end{solution}
+
+\begin{exercise}
+\begin{figure}[htb]
+\centering
+\begin{minipage}{0.35\textwidth}
+\centering
+\adjustbox{max width=\textwidth}{%
+\begin{circuitikz}
+\draw (-2, 1) node[and port] (AND1) {};
+\draw (-4.5, -1.5) node[not port] (NOT1) {};
+\draw (-4.5, -0.5) node[not port] (NOT2) {};
+\draw (-2, -1) node[and port] (AND2) {};
+\draw (0, 0) node[or port] (OR1) {};
+\draw (OR1.out) node[anchor=west] {$A_0$};
+\draw (AND1.out) |- (OR1.in 1);
+\draw (AND2.out) |- (OR1.in 2);
+\draw (-7.25, 1) node (E0) {$E_0$};
+\draw (-7.25, -1) node (E1) {$E_1$};
+\draw (E0)[xshift = 0.25cm] |- (-6.5,  1) node[circle, fill, inner sep=1pt] (E0cross) {} |- (AND1.in 1);
+\draw (E1)[xshift = 0.25cm] |- (-6.75,  -1) node[circle, fill, inner sep=1pt] (E1cross) {} |- (AND1.in 2);
+\draw (E1cross) |- (NOT1.in 1);
+\draw (E0cross) |- (NOT2.in 1);
+\draw (NOT2.out) |- (AND2.in 1);
+\draw (NOT1.out) |- (AND2.in 2);
+\end{circuitikz}
+}
+\caption*{$A_0 = E_0 \wedge E_1 \vee \neg E_0 \wedge \neg E_1$}
+\end{minipage}
+\hfill
+\begin{minipage}{0.6\textwidth}
+\centering
+\fillwithgrid{1in}
+\end{minipage}
+\end{figure}
+\end{exercise}
+
+\begin{solution}
+\begin{table}[H]
+\begin{flalign*}
+A_0 = E_0 \wedge E_1 \vee \neg E_0 \wedge \neg E_1 = (E_0 \wedge E_1) \vee ((\neg E_0) \wedge (\neg E_1))&&
+\end{flalign*}
+\centering
+\begin{tblr}{|c|c||c|}
+\hline
+$E_0$ 	& 	$E_1$ 	& 	$A_0 = E_0 \wedge E_1 \vee \neg E_0 \wedge \neg E_1$ 	\\ \hline[2pt]
+$0$		&  	$0$     	& 	$1$	\\ \hline
+$0$		& 	$1$     	& 	$0$	\\ \hline
+$1$ 		& 	$0$      	& 	$0$	\\ \hline
+$1$		& 	$1$     	& 	$1$	\\ \hline
+\end{tblr}
+\end{table}
+\end{solution}
+
+\begin{exercise}
+$A_0 = (\neg E_0 \vee E_1 \vee E_2) \wedge \neg(E_0 \vee E_3)$
+\fillwithgrid{\stretch{1}}
+\end{exercise}
+\begin{solution}
+\begin{table}[H]
+\begin{flalign*}
+A_0 = (\neg E_0 \vee E_1 \vee E_2) \wedge \neg(E_0 \vee E_3) = ((\neg E_0) \vee E_1 \vee E_2) \wedge \neg(E_0 \vee E_3)&&
+\end{flalign*}
+\centering
+\begin{tblr}{|c|c|c|c||c|}
+\hline
+$E_3$ & $E_2$ & $E_1$ & $E_0$ & $A_0 = (\neg E_0 \vee E_1 \vee E_2) \wedge \neg(E_0 \vee E_3)$ \\ \hline[2pt]
+$0$ & $0$ & $0$ & $0$ & $1$ \\ \hline
+$0$ & $0$ & $0$ & $1$ & $0$ \\ \hline
+$0$ & $0$ & $1$ & $0$ & $1$ \\ \hline
+$0$ & $0$ & $1$ & $1$ & $0$ \\ \hline
+$0$ & $1$ & $0$ & $0$ & $1$ \\ \hline
+$0$ & $0$ & $0$ & $1$ & $0$ \\ \hline
+$0$ & $1$ & $1$ & $0$ & $1$ \\ \hline
+$0$ & $1$ & $1$ & $1$ & $0$ \\ \hline
+$1$ & $0$ & $0$ & $0$ & $0$ \\ \hline
+$1$ & $0$ & $0$ & $1$ & $0$ \\ \hline
+$1$ & $0$ & $1$ & $0$ & $0$ \\ \hline
+$1$ & $0$ & $1$ & $1$ & $0$ \\ \hline
+$1$ & $1$ & $0$ & $0$ & $0$ \\ \hline
+$1$ & $1$ & $0$ & $1$ & $0$ \\ \hline
+$1$ & $1$ & $1$ & $0$ & $0$ \\ \hline
+$1$ & $1$ & $1$ & $1$ & $0$ \\ \hline
+\end{tblr}
+\end{table}
+\end{solution}
